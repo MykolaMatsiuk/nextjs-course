@@ -1,21 +1,49 @@
-import { Fragment } from 'react';
+import { Fragment, useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import useSWR from 'swr';
 
 import EventsList from '../../components/events/event-list';
 import ResultsTitle from '../../components/events/results-title';
 import Button from '../../components/ui/button';
 import ErrorAlert from '../../components/ui/error-alert';
-import { getFilteredEvents } from '../../dummy-data';
+// import { getFilteredEvents } from '../../api-helpers';
+import { URL } from '../../consts';
 
 function FilteredEventsPage() {
+	// const [loadedEvents, setLoadedEvents] = useState();
 	const router = useRouter();
+	const { slug } = router.query;
 
-	const filterData = router.query.slug;
+	const fetcher = (...args) =>
+		fetch(...args)
+			.then((res) => res.json())
+			.then((data) => {
+				const events = [];
 
-	if (!filterData) return <p className="center">Loading...</p>;
+				for (const key in data) {
+					events.push({ ...data[key], id: key });
+				}
 
-	const [year, month] = filterData;
+				return events;
+			});
 
+	const { data: loadedEvents, error } = useSWR(URL, fetcher);
+
+	// useEffect(() => {
+	// 	if (data) {
+	// 		const events = [];
+
+	// 		for (const key in data) {
+	// 			events.push({ ...data[key], id: key });
+	// 		}
+
+	// 		setLoadedEvents(events);
+	// 	}
+	// }, [data]);
+
+	if (!loadedEvents) return <p className="center">Loading</p>;
+
+	const [year, month] = slug;
 	const numYear = +year;
 	const numMonth = +month;
 
@@ -25,7 +53,8 @@ function FilteredEventsPage() {
 		numYear > 2030 ||
 		numYear < 2021 ||
 		numMonth > 12 ||
-		numMonth < 1
+		numMonth < 1 ||
+		error
 	) {
 		return (
 			<Fragment>
@@ -39,9 +68,12 @@ function FilteredEventsPage() {
 		);
 	}
 
-	const filteredEvents = getFilteredEvents({
-		year: numYear,
-		month: numMonth
+	const filteredEvents = loadedEvents.filter((event) => {
+		const eventDate = new Date(event.date);
+		return (
+			eventDate.getFullYear() === numYear &&
+			eventDate.getMonth() === numMonth - 1
+		);
 	});
 
 	if (!filteredEvents || !filteredEvents.length)
@@ -65,5 +97,35 @@ function FilteredEventsPage() {
 		</Fragment>
 	);
 }
+
+// export async function getServerSideProps(context) {
+// 	const { slug } = context.params;
+// 	const [year, month] = slug;
+// 	const numYear = +year;
+// 	const numMonth = +month;
+
+// 	if (
+// 		isNaN(numYear) ||
+// 		isNaN(numMonth) ||
+// 		numYear > 2030 ||
+// 		numYear < 2021 ||
+// 		numMonth > 12 ||
+// 		numMonth < 1
+// 	) {
+// 		return {
+// 			props: { hasError: true }
+// 			// notFound: true
+// 		};
+// 	}
+
+// 	const filteredEvents = await getFilteredEvents({
+// 		year: numYear,
+// 		month: numMonth
+// 	});
+
+// 	return {
+// 		props: { filteredEvents, date: { numYear, numMonth } }
+// 	};
+// }
 
 export default FilteredEventsPage;

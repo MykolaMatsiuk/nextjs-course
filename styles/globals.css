@@ -19,5 +19,6 @@ h6 {
 }
 
 .center {
+	margin: auto;
 	text-align: center;
 }
