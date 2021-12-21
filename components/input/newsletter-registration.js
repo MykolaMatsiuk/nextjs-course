@@ -18,11 +18,9 @@ function NewsletterRegistration() {
 			method: 'POST',
 			body: JSON.stringify(sendBody),
 			headers: { 'Content-Type': 'application/json' }
-		}).then((res) => res.json());
-		// .then((data) => console.log(data));
-		// fetch user input (state or refs)
-		// optional: validate input
-		// send valid data to API
+		})
+			.then((res) => res.json())
+			.then((data) => console.log(data));
 	}
 
 	return (
