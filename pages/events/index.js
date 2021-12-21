@@ -4,7 +4,7 @@ import Head from 'next/head';
 
 import EventList from '../../components/events/event-list';
 import EventSearch from '../../components/events/event-search';
-import { getAllEvents } from '../../api-helpers';
+import { getAllEvents } from '../../helpers/api-utils';
 
 function EventsPage({ events }) {
 	const router = useRouter();

@@ -7,7 +7,7 @@ import EventsList from '../../components/events/event-list';
 import ResultsTitle from '../../components/events/results-title';
 import Button from '../../components/ui/button';
 import ErrorAlert from '../../components/ui/error-alert';
-// import { getFilteredEvents } from '../../api-helpers';
+// import { getFilteredEvents } from '../../helpers/api-utils';
 import { URL } from '../../consts';
 
 function FilteredEventsPage() {

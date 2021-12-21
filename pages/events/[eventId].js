@@ -4,7 +4,7 @@ import Head from 'next/head';
 import EventSummary from '../../components/event-detail/event-summary';
 import EventLogistics from '../../components/event-detail/event-logistics';
 import EventContent from '../../components/event-detail/event-content';
-import { getFeaturedEvents, getEventById } from '../../api-helpers';
+import { getFeaturedEvents, getEventById } from '../../helpers/api-utils';
 import Comments from '../../components/input/comments';
 
 function EventDetailPage({ event }) {
